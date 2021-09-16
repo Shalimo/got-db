@@ -15,10 +15,19 @@ export default class RandomChar extends Component {
             error: false
         }
         this.gotService = new GotService();
-        this.updateCharacter();
+        console.log('constructor');
     }
 
-    updateCharacter() {
+    componentDidMount() {
+        this.updateCharacter();
+        this.timerId = setInterval(this.updateCharacter, 1000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timerId);
+    }
+
+    updateCharacter = () => {
         const id = Math.floor(Math.random() * 140 + 25);
         this.gotService.getCharacter(id)
             .then((char) => {
@@ -36,6 +45,7 @@ export default class RandomChar extends Component {
     }
 
     render() {
+        console.log('render');
         const {char, loading, error} = this.state;
 
         const isSpinner = loading ? <Spinner/> : <View char={char}/>;
