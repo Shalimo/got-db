@@ -2,12 +2,15 @@ import React, {Component} from 'react';
 import './randomChar.css';
 import GotService from '../../services/gotService';
 
+import Spinner from '../spinner/spinner';
+
 export default class RandomChar extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             char: {},
+            loading: true
         }
         this.gotService = new GotService();
         this.updateCharacter();
@@ -19,16 +22,31 @@ export default class RandomChar extends Component {
             .then((char) => {
                 this.setState({
                     char,
+                    loading: false
                 })
             })
     }
 
     render() {
-        const {char :{name, gender, born, died, culture}} = this.state;
+        const {char, loading} = this.state;
+
+        const isSpinner = loading ? <Spinner/> : <View char={char}/>
 
         return (
             <div className="random-block rounded">
-                <h4>Random Character: {name}</h4>
+                {isSpinner}
+            </div>
+        );
+    }
+}
+
+const View = ({char}) => {
+
+    const {name, gender, born, died, culture} = char;
+
+    return (
+        <>
+              <h4>Random Character: {name}</h4>
                 <ul className="list-group list-group-flush">
                     <li className="list-group-item d-flex justify-content-between">
                         <span className="term">Gender </span>
@@ -47,7 +65,6 @@ export default class RandomChar extends Component {
                         <span>{culture}</span>
                     </li>
                 </ul>
-            </div>
-        );
-    }
+        </>
+    )
 }
