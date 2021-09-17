@@ -32,7 +32,7 @@ export default class RandomChar extends Component {
         this.gotService.getCharacter(id)
             .then((char) => {
                 this.setState({
-                    char,
+                    char: char,
                     loading: false
                 })
             })
