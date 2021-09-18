@@ -1,13 +1,13 @@
 import React, {Component} from "react";
 import ItemList from "../itemList"; 
-import ItemDetails from "../itemDetails";
 import ErrorMesage from "../error";
-import RowBlock from "../rowBlock"
-import { Field } from "../itemDetails";
+import {withRouter} from "react-router-dom";
+
 
 import GotService from "../../services/gotService";
 
-export default class CharacterPage extends Component {
+
+class CharacterPage extends Component {
 
     constructor(props) {
         super(props);
@@ -33,27 +33,17 @@ export default class CharacterPage extends Component {
             return <ErrorMesage/>
         }
 
-        const itemList = (
-            <ItemList
-                getData={this.gotService.getAllCharacters} 
-                onItemSelected={this.onItemSelected}
-                renderItem={(item) => item.name} />
-        )
-
-        const itemDetails = (
-            <ItemDetails
-                itemId={this.state.selectedChar} // {/* передаем id */}
-                getData={this.gotService.getCharacter}
-            > 
-                <Field field='gender' label='Gender'/>
-                <Field field='born' label='Born'/>
-                <Field field='died' label='Died'/>
-                <Field field='culture' label='Culture'/>
-            </ItemDetails>
-        )
-
         return (
-            <RowBlock left={itemList} right={itemDetails}/>
+            <ItemList
+            getData={this.gotService.getAllCharacters} 
+            onItemSelected={
+                (itemId) => {
+                    this.props.history.push(`/characters/${itemId}`)
+                }
+            }
+            renderItem={(item) => item.name} />
         )
     }
 }
+
+export default withRouter(CharacterPage);

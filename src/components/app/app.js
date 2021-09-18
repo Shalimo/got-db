@@ -4,8 +4,10 @@ import Header from '../header';
 import RandomChar from '../randomChar';
 import ToggleButton from '../toggleButton';
 import ErrorMesage from '../error';
-import {CharacterPage, BooksPage, HousesPage} from '../pages';
+import {CharacterPage, BooksPage, HousesPage, CharacterItem} from '../pages';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 
+import './app.css';
 
 export default class App extends Component {
     
@@ -38,22 +40,32 @@ export default class App extends Component {
         }
 
         return (
-            <> 
-                <Container>
-                    <Header />
-                </Container>
-                <Container>
-                    <Row>
-                        <Col lg={{size: 5, offset: 0}}>
-                        <ToggleButton toggle={this.toggle}/>
-                            {isToggle}
-                        </Col>
-                    </Row>
-                    <CharacterPage/>
-                    <BooksPage/>
-                    <HousesPage/> 
-                </Container>
-            </>
+           <Router>
+                <div className="app"> 
+                    <Container>
+                        <Header />
+                    </Container>
+                    <Container>
+                        <Row>
+                            <Col lg={{size: 5, offset: 0}}>
+                            <ToggleButton toggle={this.toggle}/>
+                                {isToggle}
+                            </Col>
+                        </Row>
+
+                        
+                        <Route path='/books' component={BooksPage}/>
+                        <Route path='/houses' component={HousesPage}/>
+                        <Route path='/characters' exact component={CharacterPage}/>
+                        <Route path='/characters/:id' render={
+                            ({match}) => {
+                                const {id} = match.params;
+                                return <CharacterItem characterId={id}/>
+                            }
+                        } />
+                    </Container>
+                </div>
+           </Router>
         );
     }   
 }
