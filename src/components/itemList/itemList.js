@@ -2,16 +2,13 @@ import React, {Component} from 'react';
 import './itemList.css';
 import Spinner from '../spinner/spinner';
 
-import GotService from '../../services/gotService';
-
 export default class ItemList extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            charList: null
+            itemList: null
         }
-        this.gotService = new GotService();
     }
 
     componentDidMount() {
@@ -19,22 +16,28 @@ export default class ItemList extends Component {
     }
 
     updateCharList() {
-        this.gotService.getAllCharacters()
-            .then((charList) => {
+
+        const {getData} = this.props;
+
+        getData()
+            .then((itemList) => {
                 this.setState({
-                    charList: charList
+                    itemList: itemList
                 })
             })
     }
 
     renderItems(array) {
         return array.map((item, i) => {
+
+            const render = this.props.renderItem(item);
+
             return (
                 <li 
                     key={i}
                     className="list-group-item"
-                    onClick={() => this.props.onCharSelected(41 + i)}>
-                    {item.name}
+                    onClick={() => this.props.onItemSelected(41 + i)}>
+                    {render}
                 </li>
             )
         })
@@ -42,13 +45,13 @@ export default class ItemList extends Component {
 
     render() {
 
-        const {charList} = this.state;
+        const {itemList} = this.state;
 
-        if (!charList) {
+        if (!itemList) {
             return <Spinner/>
         }
 
-        const listItems = this.renderItems(charList);
+        const listItems = this.renderItems(itemList);
 
         return (
             <ul className="item-list list-group">
