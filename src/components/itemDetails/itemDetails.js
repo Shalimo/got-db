@@ -1,7 +1,5 @@
-import React, {Component} from 'react';
+import React, {useEffect, useState} from 'react';
 import './itemDetails.css';
-
-import GotService from '../../services/gotService';
 
 const Field = ({item, field, label}) => {
     return (
@@ -14,44 +12,25 @@ const Field = ({item, field, label}) => {
 
 export {Field};
 
-export default class ItemDetails extends Component {
+function ItemDetails({itemId, getData, children}) {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            item: null
-        }
-        this.gotService = new GotService();
-    }
+    const [item, changeItem] = useState({});
 
-    componentDidMount() {
-        this.updateCharacter();
-    }
+    useEffect(() => {
+        updateCharacter();
+    }, [itemId])
 
-    componentDidUpdate(prevProps) { // предыдущие пропсы, что были в компоненте 
-        if (this.props.itemId !== prevProps.itemId) {
-            this.updateCharacter();
-        }
-    }
-
-    updateCharacter() {
-        const {itemId} = this.props;
-        const {getData} = this.props;
+    function updateCharacter() {
+        
         if (!itemId) {
             return;
         }
 
-        // this.gotService.getCharacter(charId)
         getData(itemId)
-            .then((item) => {
-                this.setState({item: item})
+            .then((data) => {
+                changeItem(data) // помещаем новые данные в старые
             })
     }
-
-    render() {
-
-        const {item} = this.state;  
-        
 
         if (!item) {
             return (
@@ -66,7 +45,7 @@ export default class ItemDetails extends Component {
                 <h4>{name}</h4>
                 <ul className="list-group list-group-flush">
                     {
-                        React.Children.map(this.props.children, (child) => {
+                        React.Children.map(children, (child) => {
                             return React.cloneElement(child, {item})
                         })
                     }
@@ -74,4 +53,5 @@ export default class ItemDetails extends Component {
             </div>
         );
     }
-}
+
+    export default ItemDetails;

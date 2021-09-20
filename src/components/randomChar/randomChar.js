@@ -64,17 +64,6 @@ export default class RandomChar extends Component {
     }
 }
 
-RandomChar.prototype = {
-    interval: (props, propName, componentName) => {
-        const value = props[propName]; // получим текущее значение интервала (берем все пропсы и ищем пропНэйм, т.е. интервал внутри пропсов)
-
-        if (typeof value === 'number' && !isNaN(value)) {
-            return null
-        }
-        return new TypeError(`${componentName}: ${propName} must be a number`)
-    }
-}
-
 const View = ({char}) => {
 
     const {name, gender, born, died, culture} = char;
