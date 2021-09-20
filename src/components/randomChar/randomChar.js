@@ -18,9 +18,13 @@ export default class RandomChar extends Component {
         console.log('constructor');
     }
 
+    static defaultProps = {
+        interval: 1500
+    }
+
     componentDidMount() {
         this.updateCharacter();
-        this.timerId = setInterval(this.updateCharacter, 1000);
+        this.timerId = setInterval(this.updateCharacter, this.props.interval);
     }
 
     componentWillUnmount() {
@@ -57,6 +61,17 @@ export default class RandomChar extends Component {
                 {isSpinner}
             </div>
         );
+    }
+}
+
+RandomChar.prototype = {
+    interval: (props, propName, componentName) => {
+        const value = props[propName]; // получим текущее значение интервала (берем все пропсы и ищем пропНэйм, т.е. интервал внутри пропсов)
+
+        if (typeof value === 'number' && !isNaN(value)) {
+            return null
+        }
+        return new TypeError(`${componentName}: ${propName} must be a number`)
     }
 }
 

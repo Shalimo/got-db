@@ -2,30 +2,7 @@ import React, {Component} from 'react';
 import './itemList.css';
 import Spinner from '../spinner/spinner';
 
-export default class ItemList extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            itemList: null
-        }
-    }
-
-    componentDidMount() {
-        this.updateCharList();
-    }
-
-    updateCharList() {
-
-        const {getData} = this.props;
-
-        getData()
-            .then((itemList) => {
-                this.setState({
-                    itemList: itemList
-                })
-            })
-    }
+class ItemList extends Component {
 
     renderItems(array) {
         return array.map((item, i) => {
@@ -45,13 +22,9 @@ export default class ItemList extends Component {
 
     render() {
 
-        const {itemList} = this.state;
+        const {data} = this.props;
 
-        if (!itemList) {
-            return <Spinner/>
-        }
-
-        const listItems = this.renderItems(itemList);
+        const listItems = this.renderItems(data);
 
         return (
             <ul className="item-list list-group">
@@ -60,3 +33,44 @@ export default class ItemList extends Component {
         );
     }
 }
+
+const withData = (View) => {
+    return class extends Component {
+
+        constructor(props) {
+            super(props);
+            this.state = {
+                data: null
+            }
+        }
+    
+        componentDidMount() {
+            this.updateCharList();
+        }
+    
+        updateCharList() {
+    
+            const {getData} = this.props;
+    
+            getData()
+                .then((data) => {
+                    this.setState({
+                        data: data
+                    })
+                })
+        }
+
+        render() {
+
+            const {data} = this.state;
+
+            if (!data) {
+                return <Spinner/>
+            }
+
+            return (<View {...this.props} data={data}/>)
+        } 
+    }
+}
+
+export default withData(ItemList);
